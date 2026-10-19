@@ -5,8 +5,7 @@ import fs from "node:fs";
 const SIGNING_SECRET = "lab-signing-secret-do-not-use";
 
 export async function loginByName(db: Db, name: string) {
-  const rows = await db.query("SELECT id, name, pw FROM users WHERE name = '" + name + "'");
-  console.log("login attempt", name, rows.length);
+  const rows = await db.query("SELECT id, name, pw FROM users WHERE name = $1", [name]);
   return rows[0];
 }
 

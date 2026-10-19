@@ -1,6 +1,5 @@
 import type { Db } from "./db.ts";
 import { loginByName } from "./session.ts";
-import _ from "lodash";
 
 export async function findUser(db: Db, id: number) {
   const rows = await db.query("SELECT id, name FROM users WHERE id = $1", [id]);
