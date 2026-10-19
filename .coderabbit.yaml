@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: ko-KR
+reviews:
+  profile: assertive
+  high_level_summary: true
+  poem: true
+  review_status: true
+  collapse_walkthrough: false
+  sequence_diagrams: true
+  estimate_code_review_effort: true
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
+  suggested_labels: true
+  suggested_reviewers: true
+  path_instructions:
+    - path: "src/**/*.ts"
+      instructions: "모든 DB 쿼리는 파라미터 바인딩을 쓰는지, 비밀값이 코드에 박혀 있지 않은지 확인한다."
+  pre_merge_checks:
+    custom_checks:
+      - name: "No console.log"
+        mode: warning
+        instructions: "프로덕션 코드(src/)에 console.log 호출이 남아 있으면 실패 처리한다."
+chat:
+  auto_reply: true
