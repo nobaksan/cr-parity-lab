@@ -1,12 +1,12 @@
 import crypto from "node:crypto";
+import type { Db } from "./db.ts";
 
-// 증분 리뷰 실측용 — 의도적인 결함 두 개
-export function makeResetToken(email: string) {
-  // 결함 1: 예측 가능한 값 + 취약한 해시
-  return crypto.createHash("md5").update(email + Date.now()).digest("hex");
+/** Generate a random reset credential. Callers own hashed storage, identity binding, expiry, and single use. */
+export function makeResetToken(_email: string) {
+  return crypto.randomBytes(32).toString("hex");
 }
 
-export async function findByEmail(db: { query(sql: string): Promise<unknown[]> }, email: string) {
-  // 결함 2: 문자열 연결 SQL
-  return db.query("SELECT * FROM users WHERE email = '" + email + "'");
+/** Look up users while keeping email separate from executable SQL. */
+export async function findByEmail(db: Db, email: string) {
+  return db.query("SELECT * FROM users WHERE email = $1", [email]);
 }
