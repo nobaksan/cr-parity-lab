@@ -7,6 +7,8 @@ reviews:
   review_status: true
   auto_review:
     enabled: false
+    labels:
+      - "review-me"
   collapse_walkthrough: false
   sequence_diagrams: true
   estimate_code_review_effort: true
