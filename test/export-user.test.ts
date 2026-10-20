@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import { dirname } from "node:path";
 import type { Db, Row } from "../src/db.ts";
-import { exportUser, parseAge } from "../src/export-user.js";
+import { exportUser, parseAge, toCsv } from "../src/export-user.js";
 
 function trackDirectories(t: TestContext) {
   const directories: string[] = [];
@@ -44,8 +44,10 @@ test("export binds injection-shaped names and waits for database rows before wri
   assert.equal(result.rows, rows);
   assert.deepEqual(JSON.parse(await fs.readFile(result.path, "utf8")), rows);
   assert.equal(dirname(result.path), directories[0]);
-  assert.equal((await fs.stat(result.path)).mode & 0o777, 0o600);
-  assert.equal((await fs.stat(dirname(result.path))).mode & 0o777, 0o700);
+  if (process.platform !== "win32") {
+    assert.equal((await fs.stat(result.path)).mode & 0o777, 0o600);
+    assert.equal((await fs.stat(dirname(result.path))).mode & 0o777, 0o700);
+  }
 });
 
 test("concurrent exports have separate private files, including empty results", async t => {
@@ -55,7 +57,9 @@ test("concurrent exports have separate private files, including empty results", 
   assert.equal(new Set(exports.map(result => dirname(result.path))).size, versions.length);
   for (let i = 0; i < versions.length; i++) {
     assert.deepEqual(JSON.parse(await fs.readFile(exports[i].path, "utf8")), versions[i]);
-    assert.equal((await fs.stat(exports[i].path)).mode & 0o777, 0o600);
+    if (process.platform !== "win32") {
+      assert.equal((await fs.stat(exports[i].path)).mode & 0o777, 0o600);
+    }
   }
 });
 
@@ -115,4 +119,50 @@ test("ages accept decimal integer strings and reject malformed or unsafe input",
     "NaN", "Infinity", "9007199254740992", 12, null, undefined, {}, [12]]) {
     assert.throws(() => parseAge(input), TypeError);
   }
+});
+
+test("write and cleanup failures preserve both errors and expose the recovery path", async t => {
+  const directories = trackDirectories(t);
+  const writeFile = fs.writeFile;
+  const rm = fs.rm;
+  const writeFailure = new Error("simulated write failure");
+  const cleanupFailure = new Error("simulated cleanup failure");
+  t.mock.method(fs, "writeFile", async (path: string, _data: string, options: object) => {
+    await writeFile(path, "partial", options);
+    throw writeFailure;
+  });
+  let attempts = 0;
+  t.mock.method(fs, "rm", async (...args: Parameters<typeof fs.rm>) => {
+    if (attempts++ === 0) throw cleanupFailure;
+    return rm(...args);
+  });
+  let recoveryPath = "";
+  await assert.rejects(exportUser({ query: async () => [{ id: 1 }] }, "user"), asyncError => {
+    const error = asyncError as AggregateError & { path: string };
+    assert.ok(error instanceof AggregateError);
+    assert.deepEqual(error.errors, [writeFailure, cleanupFailure]);
+    assert.equal(error.cause, writeFailure);
+    assert.equal(dirname(error.path), directories[0]);
+    recoveryPath = error.path;
+    return true;
+  });
+  assert.equal(attempts, 1);
+  assert.equal(await fs.readFile(recoveryPath, "utf8"), "partial");
+  await fs.rm(dirname(recoveryPath), { recursive: true, force: true });
+  await assert.rejects(fs.stat(dirname(recoveryPath)), { code: "ENOENT" });
+});
+
+test("CSV quotes delimiters and line breaks and doubles embedded quotes", () => {
+  const rows = [
+    { name: 'Kim, "Jin"', note: "first\r\nsecond", extra: "a\rb" },
+    { name: "이름", note: "one\ntwo", extra: '"quoted"' },
+  ];
+  assert.equal(toCsv(rows), '"Kim, ""Jin""","first\r\nsecond","a\rb"\n이름,"one\ntwo","""quoted"""');
+});
+
+test("CSV preserves ordinary values and nullish empty fields", () => {
+  assert.equal(toCsv([{ name: "kim", age: 8, active: false, missing: null, empty: undefined }]),
+    "kim,8,false,,");
+  assert.equal(toCsv([]), "");
+  assert.equal(toCsv([{}]), "");
 });

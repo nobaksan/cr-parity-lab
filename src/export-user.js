@@ -5,6 +5,7 @@ import { join } from "node:path";
 /**
  * Export matching rows to a unique private JSON file and return { rows, path }.
  * Callers must await completion and remove the file and its directory when done.
+ * If write and cleanup both fail, reject with an AggregateError exposing path.
  * @param {import("./db.ts").Db} db
  * @param {string} name
  * @returns {Promise<{ rows: import("./db.ts").Row[], path: string }>}
@@ -18,7 +19,12 @@ export async function exportUser(db, name) {
   try {
     await fs.writeFile(path, data, { mode: 0o600, flag: "wx" });
   } catch (error) {
-    await fs.rm(directory, { recursive: true, force: true });
+    try {
+      await fs.rm(directory, { recursive: true, force: true });
+    } catch (cleanupError) {
+      throw Object.assign(new AggregateError([error, cleanupError],
+        "Export write and temporary directory cleanup failed", { cause: error }), { path });
+    }
     throw error;
   }
   return { rows, path };
@@ -36,9 +42,12 @@ export function parseAge(s) {
   return age;
 }
 
-/** Join each row's values with commas and rows with newlines, without CSV escaping. */
+/** Encode row values as CSV, quoting commas, quotes and line breaks; nullish values are empty. */
 export function toCsv(rows) {
-  return rows.map((r) => Object.values(r).join(",")).join("\n");
+  return rows.map((r) => Object.values(r).map((value) => {
+    const field = value == null ? "" : String(value);
+    return /[",\r\n]/.test(field) ? '"' + field.replaceAll('"', '""') + '"' : field;
+  }).join(",")).join("\n");
 }
 
 /** Return whether the input loosely equals the string "true". */

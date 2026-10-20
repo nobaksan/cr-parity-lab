@@ -120,7 +120,9 @@ test("dump replaces a complete file using a private same-directory temporary fil
     assert.notEqual(source, destination);
     assert.equal(await fs.readFile(path, "utf8"), original);
     assert.deepEqual(JSON.parse(await fs.readFile(source, "utf8")), sessions);
-    assert.equal((await fs.stat(source)).mode & 0o777, 0o600);
+    if (process.platform !== "win32") {
+      assert.equal((await fs.stat(source)).mode & 0o777, 0o600);
+    }
     await rename(source, destination);
   });
   await dumpSessions(path, sessions);
