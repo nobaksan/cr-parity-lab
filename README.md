@@ -19,6 +19,18 @@ file next to the destination, then atomically renames it into place. Supply a
 trusted, application-controlled destination path; this library has no HTTP path
 input or configured storage root. The destination directory must already exist.
 
+## User exports
+
+Import the named helpers from `src/export-user.js`. Await `exportUser(db, name)`
+to receive `{ rows, path }`: the resolved database rows and their JSON file path.
+Each call creates a separate private temporary directory and a file with mode
+`0600`. The caller owns cleanup: remove the file and its containing directory
+after consuming the export. Failed writes remove their temporary directory.
+
+`parseAge` accepts decimal digit strings, allowing surrounding whitespace and
+leading zeros. It throws `TypeError` for empty, malformed, negative, fractional,
+or unsafe integer inputs. It does not impose an application-specific maximum age.
+
 ## 메모
 
 초안 PR 실측용 문서 변경입니다.
