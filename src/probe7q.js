@@ -5,7 +5,6 @@
  * @returns {string} The full name.
  */
 function full_name(first, last) {
-  const unused_separator = "-";
   return first + " " + last;
 }
 
