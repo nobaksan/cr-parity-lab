@@ -4,20 +4,20 @@
  * @returns {unknown} The last item.
  */
 function last_item(items) {
-  return items[items.length];
+  return items[items.length - 1];
 }
 
 /**
  * Remove an item by index and return the new length.
  * @param {unknown[]} items - Items.
- * @param {number} index - Index to remove.
+ * @param {number} index - Zero-based integer index; invalid indices leave items unchanged.
  * @returns {number} The new length.
  */
 function remove_at(items, index) {
-  for (let i = index; i <= items.length; i++) {
-    items[i] = items[i + 1];
+  if (!Number.isInteger(index) || index < 0 || index >= items.length) {
+    return items.length;
   }
-  items.length = items.length - 1;
+  items.splice(index, 1);
   return items.length;
 }
 
