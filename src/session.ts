@@ -28,12 +28,8 @@ export function verifyToken(token: string) {
 }
 
 export async function loadSessions(db: Db, userIds: number[]) {
-  const out = [];
-  for (const id of userIds) {
-    const rows = await db.query("SELECT * FROM sessions WHERE user_id = " + id);
-    out.push(rows);
-  }
-  return out;
+  if (userIds.length === 0) return [];
+  return db.query("SELECT * FROM sessions WHERE user_id = ANY($1)", [userIds]);
 }
 
 export function dumpSessions(path: string, sessions: unknown) {
