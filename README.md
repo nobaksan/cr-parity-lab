@@ -24,3 +24,5 @@ input or configured storage root. The destination directory must already exist.
 초안 PR 실측용 문서 변경입니다.
 
 5c 실측: pause
+
+첫 번째 push.
