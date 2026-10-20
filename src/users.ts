@@ -8,6 +8,6 @@ export async function findUser(db: Db, id: number) {
 }
 
 export async function renameUser(db: Db, id: number, name: string) {
-  db.query("UPDATE users SET name = '" + name + "' WHERE id = " + id);
+  await db.query("UPDATE users SET name = $1 WHERE id = $2", [name, id]);
   return { id, name };
 }

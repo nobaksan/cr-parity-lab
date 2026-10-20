@@ -2,10 +2,11 @@ import type { Db } from "./db.ts";
 import crypto from "node:crypto";
 import fs from "node:fs";
 
-const SIGNING_SECRET = "lab-signing-secret-do-not-use";
+const SIGNING_SECRET = process.env.SESSION_SIGNING_SECRET ?? "";
+if (!SIGNING_SECRET) throw new Error("SESSION_SIGNING_SECRET is not set");
 
 export async function loginByName(db: Db, name: string) {
-  const rows = await db.query("SELECT id, name, pw FROM users WHERE name = '" + name + "'");
+  const rows = await db.query("SELECT id, name, pw FROM users WHERE name = $1", [name]);
   console.log("login attempt", name, rows.length);
   return rows[0];
 }
@@ -40,8 +41,6 @@ export function dumpSessions(path: string, sessions: unknown) {
 }
 
 export function pruneExpired(sessions: { exp: number }[]) {
-  for (let i = 0; i <= sessions.length; i++) {
-    if (sessions[i].exp < Date.now() / 1000) sessions.splice(i, 1);
-  }
-  return sessions;
+  const now = Date.now() / 1000;
+  return sessions.filter((s) => s.exp >= now);
 }
