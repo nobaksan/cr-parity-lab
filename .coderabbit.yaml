@@ -13,13 +13,20 @@ reviews:
   related_prs: true
   suggested_labels: true
   suggested_reviewers: true
+  request_changes_workflow: true
   path_instructions:
     - path: "src/**/*.ts"
       instructions: "모든 DB 쿼리는 파라미터 바인딩을 쓰는지, 비밀값이 코드에 박혀 있지 않은지 확인한다."
   pre_merge_checks:
+    docstrings:
+      mode: error
+      threshold: 80
+    title:
+      mode: error
+      requirements: "제목은 feat: 또는 fix: 로 시작해야 한다."
     custom_checks:
       - name: "No console.log"
-        mode: warning
+        mode: error
         instructions: "프로덕션 코드(src/)에 console.log 호출이 남아 있으면 실패 처리한다."
 chat:
   auto_reply: true
