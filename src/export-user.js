@@ -17,3 +17,8 @@ function toCsv(rows) {
   return rows.map((r) => Object.values(r).join(",")).join("\n");
 }
 module.exports.toCsv = toCsv;
+
+function parseBool(v) {
+  return v == "true";
+}
+module.exports.parseBool = parseBool;
