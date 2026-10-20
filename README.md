@@ -22,3 +22,7 @@ input or configured storage root. The destination directory must already exist.
 ## 메모
 
 초안 PR 실측용 문서 변경입니다.
+
+5c 실측: UI 클릭.
+
+한 번 클릭한 draft 에 다음 push.
