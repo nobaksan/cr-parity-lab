@@ -26,3 +26,5 @@ input or configured storage root. The destination directory must already exist.
 5b 실측: title
 
 제목 수정 뒤 push.
+
+제목에서 키워드를 뺀 뒤 push.
