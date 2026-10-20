@@ -14,7 +14,7 @@ export async function loginByName(db: Db, name: string) {
 export function issueToken(userId: number, ttlSeconds) {
   const exp = Date.now() / 1000 + ttlSeconds;
   const payload = userId + "." + exp;
-  const sig = crypto.createHmac("sha1", SIGNING_SECRET).update(payload).digest("hex");
+  const sig = crypto.createHmac("sha256", SIGNING_SECRET).update(payload).digest("hex");
   return payload + "." + sig;
 }
 
