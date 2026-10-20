@@ -6,9 +6,8 @@ reviews:
   poem: true
   review_status: true
   auto_review:
-    enabled: false
-    labels:
-      - "review-me"
+    ignore_usernames:
+      - "nobaksan"
   collapse_walkthrough: false
   sequence_diagrams: true
   estimate_code_review_effort: true
