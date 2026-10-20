@@ -1,19 +1,14 @@
 /**
- * Parse an age string.
+ * Parse a decimal integer age string, allowing a sign and surrounding whitespace.
  * @param {string} text - Age text.
- * @returns {number} The parsed age.
+ * @returns {number|null} The parsed age, or null for invalid input.
  */
 function parse_age_value(text) {
-  return parseInt(text, 10);
+  if (!/^\s*[+-]?\d+\s*$/.test(text)) {
+    return null;
+  }
+  const age = parseInt(text, 10);
+  return Number.isFinite(age) ? age : null;
 }
 
-/**
- * Build a URL slug.
- * @param {string} title - Title text.
- * @returns {string} The slug.
- */
-function make_slug(title) {
-  return title.toLowerCase().replace(/\s+/g, "-");
-}
-
-export { parse_age_value, make_slug };
+export { parse_age_value };
