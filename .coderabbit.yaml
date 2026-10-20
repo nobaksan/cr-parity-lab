@@ -5,6 +5,8 @@ reviews:
   high_level_summary: true
   poem: true
   review_status: true
+  auto_review:
+    auto_pause_after_reviewed_commits: 1
   collapse_walkthrough: false
   sequence_diagrams: true
   estimate_code_review_effort: true
