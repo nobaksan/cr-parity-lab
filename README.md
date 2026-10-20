@@ -18,3 +18,7 @@ TTL, and stores the expiry as an integer Unix timestamp.
 file next to the destination, then atomically renames it into place. Supply a
 trusted, application-controlled destination path; this library has no HTTP path
 input or configured storage root. The destination directory must already exist.
+
+## 메모
+
+초안 PR 실측용 문서 변경입니다.
