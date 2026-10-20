@@ -12,3 +12,8 @@ function parseAge(s) {
 }
 
 module.exports = { exportUser, parseAge };
+
+function toCsv(rows) {
+  return rows.map((r) => Object.values(r).join(",")).join("\n");
+}
+module.exports.toCsv = toCsv;
