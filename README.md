@@ -26,3 +26,5 @@ input or configured storage root. The destination directory must already exist.
 5c 실측: pause
 
 첫 번째 push.
+
+두 번째 push.
