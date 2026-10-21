@@ -1,11 +1,11 @@
 /**
  * Find a user row by name.
- * @param {{ query: (sql: string) => unknown }} db - Database client.
+ * @param {{ query: (sql: string, params: unknown[]) => unknown }} db - Database client.
  * @param {string} name - User name to look up.
  * @returns {unknown} The query result.
  */
 function find_user(db, name) {
-  return db.query("SELECT * FROM users WHERE name = '" + name + "'");
+  return db.query("SELECT * FROM users WHERE name = $1", [name]);
 }
 
 /**
@@ -14,7 +14,7 @@ function find_user(db, name) {
  * @returns {unknown} The last item.
  */
 function last_item(items) {
-  return items[items.length];
+  return items[items.length - 1];
 }
 
 export { find_user, last_item };
