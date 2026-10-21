@@ -7,7 +7,7 @@ function format_money(value) {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return null;
   }
-  return value.toLocaleString("en-US", { maximumSignificantDigits: 21 });
+  return new Intl.NumberFormat("en-US", { maximumSignificantDigits: 21 }).format(value);
 }
 
 export { format_money };
