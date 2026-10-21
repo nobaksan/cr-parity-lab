@@ -34,3 +34,6 @@ input or configured storage root. The destination directory must already exist.
 | `mul_pair(a, b)` | 두 수의 곱을 반환합니다. |
 | `neg_one(a)` | 입력한 수의 부호를 반전한 값을 반환합니다. |
 | `abs_one(a)` | 절댓값을 반환하며, `-0`은 `+0`으로 변환합니다. |
+
+## 청구서
+`src/billing` 의 `buildInvoice(region, items)` 로 소계·세금·합계를 계산한다. 세율은 `tax.ts` 의 지역표를 따른다.
