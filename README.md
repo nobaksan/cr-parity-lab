@@ -22,3 +22,5 @@ input or configured storage root. The destination directory must already exist.
 ## 메모
 
 초안 PR 실측용 문서 변경입니다.
+
+수 연산 유틸 설명 한 줄.
