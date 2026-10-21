@@ -23,4 +23,14 @@ input or configured storage root. The destination directory must already exist.
 
 초안 PR 실측용 문서 변경입니다.
 
-수 연산 유틸 설명 한 줄.
+## 수 연산 유틸리티
+
+`src/probe7r6.js`는 숫자를 입력받는 다음 함수를 export합니다.
+
+| 함수 | 동작 |
+| --- | --- |
+| `add_pair(a, b)` | 두 수의 합을 반환합니다. |
+| `sub_pair(a, b)` | 첫 번째 수에서 두 번째 수를 뺀 값을 반환합니다. |
+| `mul_pair(a, b)` | 두 수의 곱을 반환합니다. |
+| `neg_one(a)` | 입력한 수의 부호를 반전한 값을 반환합니다. |
+| `abs_one(a)` | 절댓값을 반환하며, `-0`은 `+0`으로 변환합니다. |

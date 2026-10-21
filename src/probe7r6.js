@@ -37,8 +37,13 @@ function neg_one(a) {
   return -a;
 }
 
+/**
+ * Return the absolute value of a number, converting negative zero to positive zero.
+ * @param {number} a - The number.
+ * @returns {number} The absolute value.
+ */
 function abs_one(a) {
-  return a < 0 ? -a : a;
+  return Math.abs(a);
 }
 
 export { add_pair, sub_pair, mul_pair, neg_one, abs_one };
