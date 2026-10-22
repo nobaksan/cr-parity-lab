@@ -40,3 +40,5 @@ function total_with_shipping(items, zone, express) {
 }
 
 module.exports = { calc_shipping, total_with_shipping };
+
+// 단위: 원
