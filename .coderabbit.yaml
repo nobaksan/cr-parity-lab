@@ -13,6 +13,24 @@ reviews:
   related_prs: true
   suggested_labels: true
   suggested_reviewers: true
+  auto_assign_reviewers: true
+  auto_apply_labels: true
+  labeling_instructions:
+    - label: bug
+      instructions: "Apply when the pull request fixes a defect or incorrect behavior."
+    - label: docs
+      instructions: "Apply when only documentation or comments change."
+    - label: probe
+      instructions: "Apply to every pull request whose branch name starts with s13."
+  suggested_reviewers_instructions:
+    - reviewers:
+        - handle: nobaksan
+          type: user
+      instructions: "Suggest nobaksan for changes touching src/."
+  slop_detection:
+    enabled: true
+    include_all_authors: true
+    label: slop
   request_changes_workflow: true
   path_instructions:
     - path: "src/**/*.ts"
@@ -28,5 +46,9 @@ reviews:
       - name: "No console.log"
         mode: error
         instructions: "프로덕션 코드(src/)에 console.log 호출이 남아 있으면 실패 처리한다."
+knowledge_base:
+  linked_repositories:
+    - repository: nobaksan/devflow-docs-probe
+      instructions: "Docs for the shipping service."
 chat:
   auto_reply: true

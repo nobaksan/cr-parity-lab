@@ -1,0 +1,12 @@
+name: ci
+on:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: unit tests
+        run: |
+          echo "running unit tests"
+          node -e "const a = require('./src/s13.js'); if (a.add(2, 2) !== 4) { console.error('AssertionError: add(2, 2) expected 4 but got ' + a.add(2, 2)); process.exit(1); }"
