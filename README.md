@@ -23,6 +23,21 @@ input or configured storage root. The destination directory must already exist.
 
 초안 PR 실측용 문서 변경입니다.
 
+## Account helpers
+
+`findAccount(db, email)` (also exported as `find_account`) takes a `Db` handle
+and returns the first matching account or `null`. `transfer(db, fromId, toId,
+amount)` takes a `TransactionalDb` handle and requires a finite positive amount.
+Account IDs must be unique. Queries use `$1`/`$2` parameters and `UPDATE ... RETURNING`.
+
+The caller supplies the database adapter, as with the user helpers.
+`TransactionalDb.transaction` must give each callback one isolated transaction
+connection, commit only when the callback succeeds, and roll back all writes
+when it rejects (including commit failures). Its promise must settle only after
+commit or rollback completes. Transfers check that each update returns exactly
+one row and reject missing accounts or insufficient funds. The existing
+`memoryDb` is a canned query-result fixture; it does not implement transactions.
+
 ## 수 연산 유틸리티
 
 `src/probe7r6.js`는 숫자를 입력받는 다음 함수를 export합니다.
