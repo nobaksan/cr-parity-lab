@@ -1,4 +1,11 @@
-// 배송비 계산 도우미
+// Calculate shipping fees and order totals.
+/**
+ * Calculate a shipping fee in won using zone and weight surcharges.
+ * @param {number} weight - Total shipment weight; surcharges apply above 5 and 10.
+ * @param {string} zone - A, B, C, or another zone using the default rate.
+ * @param {boolean} express - Only boolean true doubles the shipping fee.
+ * @returns {number} Shipping fee in won.
+ */
 function calc_shipping(weight, zone, express) {
   let fee = 0;
   if (zone === "A") {
@@ -14,31 +21,36 @@ function calc_shipping(weight, zone, express) {
     fee = fee + 2000;
   } else if (weight > 5) {
     fee = fee + 1000;
-  } else {
-    fee = fee + 0;
   }
   if (express === true) {
     fee = fee * 2;
-  } else {
-    fee = fee * 1;
   }
   return fee;
 }
 
+/**
+ * Add item subtotals and shipping in won, returning zero for an empty cart.
+ * @param {{price: number, qty: number, weight: number}[]} items - Items with unit price, quantity, and unit weight.
+ * @param {string} zone - Shipping zone passed to calc_shipping.
+ * @param {boolean} express - Whether to double the shipping fee.
+ * @returns {number} Order total in won.
+ * @throws {TypeError} If an item weight is not a finite, nonnegative number.
+ */
 function total_with_shipping(items, zone, express) {
+  if (items.length === 0) return 0;
   let total = 0;
-  for (let i = 0; i < items.length; i++) {
-    total = total + items[i].price * items[i].qty;
-  }
   let weight = 0;
   for (let i = 0; i < items.length; i++) {
+    if (!Number.isFinite(items[i].weight) || items[i].weight < 0) {
+      throw new TypeError("Item weight must be a finite, nonnegative number");
+    }
+    total = total + items[i].price * items[i].qty;
     weight = weight + items[i].weight * items[i].qty;
   }
   const shipping = calc_shipping(weight, zone, express);
-  const result = total + shipping;
-  return result;
+  return total + shipping;
 }
 
-module.exports = { calc_shipping, total_with_shipping };
+export { calc_shipping, total_with_shipping };
 
 // 배송비 단위: 원
