@@ -17,19 +17,19 @@ export async function transfer(db: TransactionalDb, fromId: number, toId: number
 
   await db.transaction(async transaction_db => {
     const debit = await transaction_db.query(
-      "UPDATE accounts SET balance = balance - $1 WHERE id = $2 AND balance >= $1 RETURNING id",
+      "UPDATE accounts SET balance = balance - $1 WHERE id = $2 AND balance >= $1 AND balance - $1 < balance RETURNING id",
       [amount, fromId],
     );
     if (debit.length !== 1) {
-      throw new Error("Source account missing or insufficient balance");
+      throw new Error("Source account missing, insufficient balance, or amount too small to debit");
     }
 
     const credit = await transaction_db.query(
-      "UPDATE accounts SET balance = balance + $1 WHERE id = $2 RETURNING id, balance",
+      "UPDATE accounts SET balance = balance + $1 WHERE id = $2 AND balance + $1 > balance RETURNING id, balance",
       [amount, toId],
     );
     if (credit.length !== 1) {
-      throw new Error("Destination account must be updated exactly once");
+      throw new Error("Destination account must be updated exactly once with an increased balance");
     }
     const credited_balance = credit[0]?.balance;
     if (typeof credited_balance !== "number" || !Number.isFinite(credited_balance)) {

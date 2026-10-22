@@ -96,8 +96,8 @@ test("both updates bind amounts and IDs on the transaction connection", async ()
   };
   await transfer(db, from_id, to_id, 12.5);
   assert.deepEqual(calls, [
-    ["UPDATE accounts SET balance = balance - $1 WHERE id = $2 AND balance >= $1 RETURNING id", [12.5, from_id]],
-    ["UPDATE accounts SET balance = balance + $1 WHERE id = $2 RETURNING id, balance", [12.5, to_id]],
+    ["UPDATE accounts SET balance = balance - $1 WHERE id = $2 AND balance >= $1 AND balance - $1 < balance RETURNING id", [12.5, from_id]],
+    ["UPDATE accounts SET balance = balance + $1 WHERE id = $2 AND balance + $1 > balance RETURNING id, balance", [12.5, to_id]],
   ]);
 });
 
@@ -127,6 +127,30 @@ test("an SQL failure during credit rolls back the debit", async t => {
     WHEN NEW.id = 2 BEGIN SELECT RAISE(ABORT, 'credit unavailable'); END`);
   await assert.rejects(transfer(db, 1, 2, 10), /credit unavailable/);
   assert.deepEqual(await read_balances(db), [100, 20, 0]);
+});
+
+test("a rounded-away credit rejects and rolls back the debit", async t => {
+  const { db } = create_database(t);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 1", [2]);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 2", [1e16]);
+  await assert.rejects(transfer(db, 1, 2, 1), /Destination account/);
+  assert.deepEqual(await read_balances(db), [2, 1e16, 0]);
+});
+
+test("a rounded-away debit rejects before crediting the destination", async t => {
+  const { db } = create_database(t);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 1", [1e16]);
+  await db.query("UPDATE accounts SET balance = 0 WHERE id = 2");
+  await assert.rejects(transfer(db, 1, 2, 1), /Source account/);
+  assert.deepEqual(await read_balances(db), [1e16, 0, 0]);
+});
+
+test("representable transfers still credit large destination balances", async t => {
+  const { db } = create_database(t);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 1", [4]);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 2", [1e16]);
+  await transfer(db, 1, 2, 2);
+  assert.deepEqual(await read_balances(db), [2, 1e16 + 2, 0]);
 });
 
 test("an overflowing credit balance rolls back both account updates", async t => {

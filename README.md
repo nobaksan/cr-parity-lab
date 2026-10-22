@@ -35,7 +35,9 @@ The caller supplies the database adapter, as with the user helpers.
 connection, commit only when the callback succeeds, and roll back all writes
 when it rejects (including commit failures). Its promise must settle only after
 commit or rollback completes. Transfers check that each update returns exactly
-one row and reject missing accounts, insufficient funds, or a non-finite
+one row and reject missing accounts, insufficient funds, a non-finite
+destination balance, or an amount that rounds to no change in either balance.
+The debit must decrease the source balance and the credit must increase the
 destination balance. The credit update must return both `id` and numeric
 `balance` so the latter can be checked before committing. The existing
 `memoryDb` is a canned query-result fixture; it does not implement transactions.
