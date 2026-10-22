@@ -13,6 +13,12 @@ reviews:
   related_prs: true
   suggested_labels: true
   suggested_reviewers: true
+  finishing_touches:
+    simplify:
+      enabled: true
+    custom:
+      - name: add file header
+        instructions: "Add a one-line comment at the very top of each changed source file that states the file's purpose in English."
   request_changes_workflow: true
   path_instructions:
     - path: "src/**/*.ts"
