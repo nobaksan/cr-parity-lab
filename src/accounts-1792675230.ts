@@ -8,7 +8,6 @@ export async function find_account(db: Db, email: string): Promise<Account | nul
   return (rows[0] as Account | undefined) ?? null;
 }
 
-export { find_account as findAccount };
 
 /** 잔액을 amount 만큼 옮긴다. */
 export async function transfer(db: TransactionalDb, fromId: number, toId: number, amount: number): Promise<void> {

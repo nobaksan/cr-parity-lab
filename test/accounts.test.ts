@@ -2,7 +2,7 @@ import { test, type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { DatabaseSync, type SQLInputValue } from "node:sqlite";
 import type { Db, TransactionalDb } from "../src/db.ts";
-import { findAccount, find_account, transfer } from "../src/accounts-1792675230.ts";
+import { find_account, transfer } from "../src/accounts-1792675230.ts";
 
 /** Real SQL fixture: serialize transactions on a single SQLite connection. */
 function create_database(t: TestContext) {
@@ -47,7 +47,6 @@ async function read_balances(db: Db) {
 }
 
 test("lookup binds emails, preserves the first row, and returns null for no match", async () => {
-  assert.equal(findAccount, find_account);
   for (const email of ["source@example.com", "O'Brien@example.com", "' OR 1=1 --", ""]) {
     const account = { id: 1, email, balance: 100 };
     const db: Db = {
@@ -57,17 +56,17 @@ test("lookup binds emails, preserves the first row, and returns null for no matc
         return [account, { id: 2 }];
       },
     };
-    assert.equal(await findAccount(db, email), account);
+    assert.equal(await find_account(db, email), account);
   }
-  assert.equal(await findAccount({ query: async () => [] }, "missing@example.com"), null);
+  assert.equal(await find_account({ query: async () => [] }, "missing@example.com"), null);
   const failure = new Error("lookup failed");
-  await assert.rejects(findAccount({ query: async () => { throw failure; } }, "email"), error => error === failure);
+  await assert.rejects(find_account({ query: async () => { throw failure; } }, "email"), error => error === failure);
 });
 
 test("real SQL lookup treats injection-shaped emails as data", async t => {
   const { db } = create_database(t);
-  assert.deepEqual(await findAccount(db, "source@example.com"), { id: 1, email: "source@example.com", balance: 100 });
-  assert.equal(await findAccount(db, "' OR 1=1 --"), null);
+  assert.deepEqual(await find_account(db, "source@example.com"), { id: 1, email: "source@example.com", balance: 100 });
+  assert.equal(await find_account(db, "' OR 1=1 --"), null);
 });
 
 test("invalid amounts reject before any database access", async () => {
