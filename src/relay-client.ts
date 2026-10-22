@@ -11,3 +11,5 @@ export function relayUrl(server: string, path: string) {
 export function relayHealth(server: string) {
   return fetch(`${server}/health`).then((r) => r.ok);
 }
+
+export const RELAY_TIMEOUT_MS = 5000;
