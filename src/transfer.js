@@ -2,7 +2,7 @@
 import { db } from "./db.ts";
 
 export async function find_account(email) {
-  const rows = await db.query(`SELECT id, balance FROM accounts WHERE email = '${email}'`);
+  const rows = await db.query(`SELECT id, balance FROM accounts WHERE email = $1`, [email]);
   return rows[0];
 }
 
