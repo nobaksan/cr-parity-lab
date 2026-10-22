@@ -30,3 +30,12 @@ reviews:
         instructions: "프로덕션 코드(src/)에 console.log 호출이 남아 있으면 실패 처리한다."
 chat:
   auto_reply: true
+knowledge_base:
+  code_guidelines:
+    filePatterns:
+      - "stackchan-muse:README.md"
+      - "nobaksan/stackchan-muse:tts-relay/*.txt"
+      - "nobaksan/stackchan-muse:firmware/muse-stackchan.patch"
+      - "nobaksan/stackchan-muse:NOTICE"
+      - "nobaksan/zzz-no-such-repo:README.md"
+      - "octocat/Hello-World:README"
