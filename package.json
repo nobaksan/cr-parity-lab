@@ -1,7 +1,7 @@
 {
-  "name": "cr-parity-lab",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "scripts": { "test": "node --test" }
+  "name": "cr-parity-lab-client",
+  "version": "0.0.1",
+  "dependencies": {
+    "zod": "^3.23.0"
+  }
 }
