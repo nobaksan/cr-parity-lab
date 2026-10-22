@@ -7,3 +7,7 @@ export async function postToRelay(server: string, text: string) {
 export function relayUrl(server: string, path: string) {
   return server + path;
 }
+
+export function relayHealth(server: string) {
+  return fetch(`${server}/health`).then((r) => r.ok);
+}
