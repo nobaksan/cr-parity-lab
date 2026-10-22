@@ -36,9 +36,12 @@ connection, commit only when the callback succeeds, and roll back all writes
 when it rejects (including commit failures). Its promise must settle only after
 commit or rollback completes. Transfers check that each update returns exactly
 one row and reject missing accounts, insufficient funds, a non-finite
-destination balance, or an amount that rounds to no change in either balance.
-The debit must decrease the source balance and the credit must increase the
-destination balance. The credit update must return both `id` and numeric
+destination balance, or any update that cannot represent the requested amount
+exactly. Each update must change the balance by `amount` and reverse exactly
+to its previous balance. With floating-point storage, this can reject ordinary
+decimal amounts such as `0.1`; exactly representable fractions such as `12.5`
+remain supported when both balances can represent the result.
+The credit update must return both `id` and numeric
 `balance` so the latter can be checked before committing. The existing
 `memoryDb` is a canned query-result fixture; it does not implement transactions.
 

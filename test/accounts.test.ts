@@ -96,8 +96,8 @@ test("both updates bind amounts and IDs on the transaction connection", async ()
   };
   await transfer(db, from_id, to_id, 12.5);
   assert.deepEqual(calls, [
-    ["UPDATE accounts SET balance = balance - $1 WHERE id = $2 AND balance >= $1 AND balance - $1 < balance RETURNING id", [12.5, from_id]],
-    ["UPDATE accounts SET balance = balance + $1 WHERE id = $2 AND balance + $1 > balance RETURNING id, balance", [12.5, to_id]],
+    ["UPDATE accounts SET balance = balance - $1 WHERE id = $2 AND balance >= $1 AND balance - $1 < balance AND balance - (balance - $1) = $1 AND (balance - $1) + $1 = balance RETURNING id", [12.5, from_id]],
+    ["UPDATE accounts SET balance = balance + $1 WHERE id = $2 AND balance + $1 > balance AND (balance + $1) - balance = $1 AND (balance + $1) - $1 = balance RETURNING id, balance", [12.5, to_id]],
   ]);
 });
 
@@ -153,10 +153,40 @@ test("representable transfers still credit large destination balances", async t 
   assert.deepEqual(await read_balances(db), [2, 1e16 + 2, 0]);
 });
 
+test("an inexact credit rejects and rolls back the debit", async t => {
+  const { db } = create_database(t);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 1", [4]);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 2", [1e16]);
+  await assert.rejects(transfer(db, 1, 2, 3), /Destination account/);
+  assert.deepEqual(await read_balances(db), [4, 1e16, 0]);
+});
+
+test("an inexact debit rejects before crediting the destination", async t => {
+  const { db } = create_database(t);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 1", [1e16]);
+  await db.query("UPDATE accounts SET balance = 0 WHERE id = 2");
+  await assert.rejects(transfer(db, 1, 2, 3), /Source account/);
+  assert.deepEqual(await read_balances(db), [1e16, 0, 0]);
+});
+
+test("a credit cannot swallow a small destination balance", async t => {
+  const { db } = create_database(t);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 1", [1e16]);
+  await db.query("UPDATE accounts SET balance = 1 WHERE id = 2");
+  await assert.rejects(transfer(db, 1, 2, 1e16), /Destination account/);
+  assert.deepEqual(await read_balances(db), [1e16, 1, 0]);
+});
+
+test("an inexact decimal transfer leaves both balances intact", async t => {
+  const { db } = create_database(t);
+  await assert.rejects(transfer(db, 1, 2, 0.1), /Source account/);
+  assert.deepEqual(await read_balances(db), [100, 20, 0]);
+});
+
 test("an overflowing credit balance rolls back both account updates", async t => {
   const { db } = create_database(t);
   await db.query("UPDATE accounts SET balance = $1 WHERE id IN (1, 2)", [Number.MAX_VALUE]);
-  await assert.rejects(transfer(db, 1, 2, Number.MAX_VALUE), RangeError);
+  await assert.rejects(transfer(db, 1, 2, Number.MAX_VALUE), /Destination/);
   assert.deepEqual(await read_balances(db), [Number.MAX_VALUE, Number.MAX_VALUE, 0]);
 });
 
