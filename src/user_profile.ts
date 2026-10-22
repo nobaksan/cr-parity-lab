@@ -9,3 +9,8 @@ export function loadUserProfile(rawId: string) {
 export function listUserProfiles(rawIds: string[]) {
   return rawIds.map((rawId) => loadUserProfile(rawId));
 }
+
+export function print_profile_summary(res_profile: { id: number; name: string }) {
+  console.log("요약", res_profile.id, res_profile.name);
+  return `${res_profile.id}:${res_profile.name}`;
+}
