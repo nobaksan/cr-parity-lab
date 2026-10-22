@@ -25,11 +25,15 @@ export async function transfer(db: TransactionalDb, fromId: number, toId: number
     }
 
     const credit = await transaction_db.query(
-      "UPDATE accounts SET balance = balance + $1 WHERE id = $2 RETURNING id",
+      "UPDATE accounts SET balance = balance + $1 WHERE id = $2 RETURNING id, balance",
       [amount, toId],
     );
     if (credit.length !== 1) {
       throw new Error("Destination account must be updated exactly once");
+    }
+    const credited_balance = credit[0]?.balance;
+    if (typeof credited_balance !== "number" || !Number.isFinite(credited_balance)) {
+      throw new RangeError("Destination balance must be a finite number");
     }
   });
 }

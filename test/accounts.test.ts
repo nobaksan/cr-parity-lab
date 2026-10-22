@@ -89,7 +89,7 @@ test("both updates bind amounts and IDs on the transaction connection", async ()
       return operation({
         async query(sql, params) {
           calls.push([sql, params]);
-          return [{ id: calls.length }];
+          return [{ id: calls.length, balance: 32.5 }];
         },
       });
     },
@@ -97,7 +97,7 @@ test("both updates bind amounts and IDs on the transaction connection", async ()
   await transfer(db, from_id, to_id, 12.5);
   assert.deepEqual(calls, [
     ["UPDATE accounts SET balance = balance - $1 WHERE id = $2 AND balance >= $1 RETURNING id", [12.5, from_id]],
-    ["UPDATE accounts SET balance = balance + $1 WHERE id = $2 RETURNING id", [12.5, to_id]],
+    ["UPDATE accounts SET balance = balance + $1 WHERE id = $2 RETURNING id, balance", [12.5, to_id]],
   ]);
 });
 
@@ -127,6 +127,40 @@ test("an SQL failure during credit rolls back the debit", async t => {
     WHEN NEW.id = 2 BEGIN SELECT RAISE(ABORT, 'credit unavailable'); END`);
   await assert.rejects(transfer(db, 1, 2, 10), /credit unavailable/);
   assert.deepEqual(await read_balances(db), [100, 20, 0]);
+});
+
+test("an overflowing credit balance rolls back both account updates", async t => {
+  const { db } = create_database(t);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id IN (1, 2)", [Number.MAX_VALUE]);
+  await assert.rejects(transfer(db, 1, 2, Number.MAX_VALUE), RangeError);
+  assert.deepEqual(await read_balances(db), [Number.MAX_VALUE, Number.MAX_VALUE, 0]);
+});
+
+test("a finite credit balance can reach the largest supported number", async t => {
+  const { db } = create_database(t);
+  await db.query("UPDATE accounts SET balance = $1 WHERE id = 1", [Number.MAX_VALUE]);
+  await db.query("UPDATE accounts SET balance = 0 WHERE id = 2");
+  await transfer(db, 1, 2, Number.MAX_VALUE);
+  assert.deepEqual(await read_balances(db), [0, Number.MAX_VALUE, 0]);
+});
+
+test("an invalid returned credit balance rolls back both account updates", async t => {
+  const { db } = create_database(t);
+  for (const balance of [NaN, Infinity, -Infinity, undefined, null, "30"]) {
+    const adapter: TransactionalDb = {
+      query: db.query,
+      transaction(operation) {
+        return db.transaction(transaction_db => operation({
+          async query(sql, params) {
+            const rows = await transaction_db.query(sql, params);
+            return sql.includes("balance = balance +") ? [{ ...rows[0], balance }] : rows;
+          },
+        }));
+      },
+    };
+    await assert.rejects(transfer(adapter, 1, 2, 10), RangeError);
+    assert.deepEqual(await read_balances(db), [100, 20, 0]);
+  }
 });
 
 test("each update must return exactly one row or all writes roll back", async t => {
@@ -177,7 +211,7 @@ test("transfer waits for transaction settlement and propagates commit failures",
   const db: TransactionalDb = {
     async query() { assert.fail("unexpected root query"); },
     async transaction(operation) {
-      await operation({ query: async () => [{ id: 1 }] });
+      await operation({ query: async () => [{ id: 1, balance: 1 }] });
       callback_finished();
       await commit;
       throw failure;

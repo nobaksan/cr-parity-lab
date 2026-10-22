@@ -25,7 +25,7 @@ input or configured storage root. The destination directory must already exist.
 
 ## Account helpers
 
-`findAccount(db, email)` (also exported as `find_account`) takes a `Db` handle
+`find_account(db, email)` takes a `Db` handle
 and returns the first matching account or `null`. `transfer(db, fromId, toId,
 amount)` takes a `TransactionalDb` handle and requires a finite positive amount.
 Account IDs must be unique. Queries use `$1`/`$2` parameters and `UPDATE ... RETURNING`.
@@ -35,7 +35,9 @@ The caller supplies the database adapter, as with the user helpers.
 connection, commit only when the callback succeeds, and roll back all writes
 when it rejects (including commit failures). Its promise must settle only after
 commit or rollback completes. Transfers check that each update returns exactly
-one row and reject missing accounts or insufficient funds. The existing
+one row and reject missing accounts, insufficient funds, or a non-finite
+destination balance. The credit update must return both `id` and numeric
+`balance` so the latter can be checked before committing. The existing
 `memoryDb` is a canned query-result fixture; it does not implement transactions.
 
 ## 수 연산 유틸리티
