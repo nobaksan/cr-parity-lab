@@ -14,25 +14,19 @@ function calc_shipping(weight, zone, express) {
     fee = fee + 2000;
   } else if (weight > 5) {
     fee = fee + 1000;
-  } else {
-    fee = fee + 0;
   }
-  if (express === true) {
+  if (express) {
     fee = fee * 2;
-  } else {
-    fee = fee * 1;
   }
   return fee;
 }
 
 function total_with_shipping(items, zone, express) {
   let total = 0;
-  for (let i = 0; i < items.length; i++) {
-    total = total + items[i].price * items[i].qty;
-  }
   let weight = 0;
   for (let i = 0; i < items.length; i++) {
-    weight = weight + items[i].weight * items[i].qty;
+    total += items[i].price * items[i].qty;
+    weight += items[i].weight * items[i].qty;
   }
   const shipping = calc_shipping(weight, zone, express);
   const result = total + shipping;
