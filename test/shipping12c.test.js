@@ -49,3 +49,32 @@ test("invalid or missing item weights are rejected before shipping is calculated
   }
   assert.throws(() => total_with_shipping([{ price: 100, qty: 1 }], "A", false), TypeError);
 });
+
+for (const [field, label] of [["price", "price"], ["qty", "quantity"]]) {
+  test(`invalid or missing item ${label} is rejected before accumulation`, () => {
+    const valid_item = Object.freeze({ price: 100, qty: 1, weight: 12 });
+    for (const value of [undefined, null, NaN, Infinity, -Infinity, -1, -Number.MIN_VALUE,
+      "2", "", true, false, {}, [], 2n, Symbol("value"), new Number(2)]) {
+      const invalid_item = Object.freeze({ ...valid_item, [field]: value });
+      for (const items of [[invalid_item], [valid_item, invalid_item]]) {
+        assert.throws(() => total_with_shipping(items, "A", false), {
+          name: "TypeError",
+          message: `Item ${label} must be a finite, nonnegative number`,
+        });
+      }
+    }
+    const missing_field = { ...valid_item };
+    delete missing_field[field];
+    assert.throws(() => total_with_shipping([missing_field], "A", false), {
+      name: "TypeError",
+      message: `Item ${label} must be a finite, nonnegative number`,
+    });
+  });
+}
+
+test("zero and fractional prices and quantities preserve existing numeric behavior", () => {
+  assert.equal(total_with_shipping([{ price: 0, qty: 2, weight: 6 }], "A", false), 5000);
+  assert.equal(total_with_shipping([{ price: 100, qty: 0, weight: 12 }], "A", false), 3000);
+  assert.equal(total_with_shipping([{ price: 1.5, qty: 0.5, weight: 12 }], "A", false), 4000.75);
+  assert.equal(total_with_shipping([{ price: 1.5, qty: 0.5, weight: 12 }], "A", true), 8000.75);
+});
