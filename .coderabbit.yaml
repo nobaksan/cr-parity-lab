@@ -33,12 +33,9 @@ chat:
 knowledge_base:
   code_guidelines:
     filePatterns:
-      - "nobaksan/stackchan-muse:tts-relay/server.py"
-      - "nobaksan/stackchan-muse:firmware/build.sh"
-      - "nobaksan/stackchan-muse:tts-relay/.env.example"
-      - "nobaksan/stackchan-muse:LICENSE"
-      - "nobaksan/stackchan-muse:firmware/*.sh"
-      - "nobaksan/stackchan-muse:tts-relay/stackchan-tts.service"
-      - "nobaksan/stackchan-muse:firmware/restore.sh"
-      - "nobaksan/stackchan-muse:firmware/not-here.md"
-      - "nobaksan/stackchan-muse:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      - "stackchan-muse:README.md"
+      - "nobaksan/stackchan-muse:tts-relay/*.txt"
+      - "nobaksan/stackchan-muse:firmware/muse-stackchan.patch"
+      - "nobaksan/stackchan-muse:NOTICE"
+      - "nobaksan/zzz-no-such-repo:README.md"
+      - "octocat/Hello-World:README"
