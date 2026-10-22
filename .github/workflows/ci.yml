@@ -1,0 +1,20 @@
+name: ci
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - name: unit tests
+        run: |
+          echo "running unit tests"
+          node -e "const a = require('./src/s13.js'); if (a.add(2, 2) !== 4) { console.error('AssertionError: add(2, 2) expected 4 but got ' + a.add(2, 2)); process.exit(1); }"
+          npm test
