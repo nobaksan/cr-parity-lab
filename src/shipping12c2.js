@@ -1,3 +1,4 @@
+// This file provides functions for calculating shipping costs.
 // 배송비 계산 도우미
 function calc_shipping(weight, zone, express) {
   let fee = 0;
