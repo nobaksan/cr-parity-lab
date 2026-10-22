@@ -14,14 +14,8 @@ function calc_shipping(weight, zone, express) {
     fee = fee + 2000;
   } else if (weight > 5) {
     fee = fee + 1000;
-  } else {
-    fee = fee + 0;
-  }
   if (express === true) {
     fee = fee * 2;
-  } else {
-    fee = fee * 1;
-  }
   return fee;
 }
 
