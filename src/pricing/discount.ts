@@ -15,3 +15,7 @@ export function bulkDiscount(prices: number[], rate: number): number[] {
 export function formatKrw(value: number): string {
   return value.toFixed(0) + "원";
 }
+
+export function labelPrice(value: number): string {
+  return "가격: " + value.toFixed(2) + " 원";
+}
