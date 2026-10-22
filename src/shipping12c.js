@@ -1,4 +1,4 @@
-// 배송비 계산 도우미
+// Calculates shipping fees and order totals including shipping.
 function calc_shipping(weight, zone, express) {
   let fee = 0;
   if (zone === "A") {
