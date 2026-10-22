@@ -5,3 +5,7 @@ export function loadUserProfile(rawId: string) {
   const res_profile = { id, name: `user-${id}` };
   return res_profile;
 }
+
+export function listUserProfiles(rawIds: string[]) {
+  return rawIds.map((rawId) => loadUserProfile(rawId));
+}
