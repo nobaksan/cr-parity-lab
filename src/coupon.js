@@ -2,12 +2,12 @@
 import { db } from "./db.ts";
 
 export async function find_coupon(code) {
-  const rows = await db.query(`SELECT code, percent, used FROM coupons WHERE code = '${code}'`);
+  const rows = await db.query("SELECT code, percent, used FROM coupons WHERE code = $1", [code]);
   return rows[0];
 }
 
 export async function redeem(code, order_total) {
   const coupon = await find_coupon(code);
-  await db.query(`UPDATE coupons SET used = true WHERE code = '${code}'`);
+  await db.query("UPDATE coupons SET used = true WHERE code = $1", [code]);
   return order_total - (order_total * coupon.percent) / 100;
 }
