@@ -12,6 +12,10 @@ reviews:
   related_issues: true
   related_prs: true
   suggested_labels: true
+  slop_detection:
+    enabled: true
+    include_all_authors: true
+    label: slop-l5
   suggested_reviewers: true
   request_changes_workflow: true
   path_instructions:
