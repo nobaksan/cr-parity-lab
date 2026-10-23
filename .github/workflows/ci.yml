@@ -1,0 +1,12 @@
+name: ci
+on: [pull_request]
+jobs:
+  total:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: check order total
+        run: node test/order-total-13d.check.js
