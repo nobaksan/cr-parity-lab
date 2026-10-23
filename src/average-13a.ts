@@ -5,3 +5,10 @@ export function average(values: number[]): number {
   for (const v of values) sum += v;
   return sum / values.length;
 }
+
+/** 합계 — 빈 목록이면 0. */
+export function total(values: number[]): number {
+  let sum = 0;
+  for (const v of values) sum += v;
+  return sum;
+}
