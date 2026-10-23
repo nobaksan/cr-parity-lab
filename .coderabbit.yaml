@@ -17,8 +17,10 @@ reviews:
   post_merge_actions:
     - name: "릴리스 노트 요약"
       prompt: "이 PR 의 변경을 한국어 한 문단의 릴리스 노트 문장으로 요약해 보고한다."
-    - name: "CHANGELOG 갱신"
-      prompt: "CHANGELOG.md 에 이 PR 의 제목을 한 줄 항목으로 추가한다. 파일이 없으면 새로 만든다."
+    - name: "파이썬 변경 점검"
+      prompt: "이 PR 이 파이썬(.py) 파일을 변경한 경우에만, 변경된 함수 이름을 나열해 보고한다. 파이썬 변경이 없으면 아무것도 하지 않는다."
+    - name: "건너뛸 액션"
+      prompt: "이 PR 의 파일 개수를 보고한다."
   path_instructions:
     - path: "src/**/*.ts"
       instructions: "모든 DB 쿼리는 파라미터 바인딩을 쓰는지, 비밀값이 코드에 박혀 있지 않은지 확인한다."
