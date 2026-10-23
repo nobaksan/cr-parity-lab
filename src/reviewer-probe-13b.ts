@@ -5,3 +5,4 @@ export function count_items(items: string[]): number {
 
 /** S13b L5 — 우리 앱 확인용 한 줄. */
 export const probeVersion = 2;
+export const probeVersion3 = 3;
