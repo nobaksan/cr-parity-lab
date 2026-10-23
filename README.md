@@ -34,3 +34,6 @@ input or configured storage root. The destination directory must already exist.
 | `mul_pair(a, b)` | 두 수의 곱을 반환합니다. |
 | `neg_one(a)` | 입력한 수의 부호를 반전한 값을 반환합니다. |
 | `abs_one(a)` | 절댓값을 반환하며, `-0`은 `+0`으로 변환합니다. |
+
+## S13b probe
+문서만 바꾸는 변경입니다 (리뷰어 지시 불일치 확인용).

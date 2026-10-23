@@ -13,6 +13,12 @@ reviews:
   related_prs: true
   suggested_labels: true
   suggested_reviewers: true
+  auto_assign_reviewers: true
+  suggested_reviewers_instructions:
+    - reviewers:
+        - handle: voyanote
+          type: user
+      instructions: Assign only when the PR changes source code under src/. Never assign for documentation-only changes.
   request_changes_workflow: true
   path_instructions:
     - path: "src/**/*.ts"
