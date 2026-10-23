@@ -30,3 +30,7 @@ reviews:
         instructions: "프로덕션 코드(src/)에 console.log 호출이 남아 있으면 실패 처리한다."
 chat:
   auto_reply: true
+knowledge_base:
+  linked_repositories:
+    - repository: nobaksan/devflow-docs-probe
+      instructions: 결제 문서 저장소 (S13e L5 — PR 브랜치 설정에서만 추가)
