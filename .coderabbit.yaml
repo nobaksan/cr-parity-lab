@@ -14,6 +14,11 @@ reviews:
   suggested_labels: true
   suggested_reviewers: true
   auto_assign_reviewers: false
+  suggested_reviewers_instructions:
+    - reviewers:
+        - handle: voyanote
+          type: user
+      instructions: Assign when the PR contains Windows registry changes.
   request_changes_workflow: true
   path_instructions:
     - path: "src/**/*.ts"
