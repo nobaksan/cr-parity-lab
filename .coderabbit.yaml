@@ -37,5 +37,21 @@ reviews:
       - name: "No console.log"
         mode: error
         instructions: "프로덕션 코드(src/)에 console.log 호출이 남아 있으면 실패 처리한다."
+issue_enrichment:
+  auto_enrich:
+    enabled: true
+  planning:
+    enabled: true
+    auto_planning:
+      enabled: true
+      labels:
+        - plan-me
+  labeling:
+    labeling_instructions:
+      - label: bug
+        instructions: 오류·예외·잘못된 동작을 고치는 이슈
+      - label: enhancement
+        instructions: 새 기능이나 옵션을 더하는 이슈
+    auto_apply_labels: true
 chat:
   auto_reply: true
