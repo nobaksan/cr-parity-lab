@@ -13,7 +13,7 @@ reviews:
   related_prs: true
   suggested_labels: true
   suggested_reviewers: true
-  auto_assign_reviewers: true
+  auto_assign_reviewers: false
   suggested_reviewers_instructions:
     - reviewers:
         - handle: voyanote
