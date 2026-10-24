@@ -1,0 +1,42 @@
+import type { Db, Row, TransactionalDb } from "./db.ts";
+
+export interface Account extends Row { id: number; email: string; balance: number }
+
+/** 이메일로 계정을 찾는다. */
+export async function find_account(db: Db, email: string): Promise<Account | null> {
+  const rows = await db.query("SELECT id, email, balance FROM accounts WHERE email = $1", [email]);
+  return (rows[0] as Account | undefined) ?? null;
+}
+
+
+/** 잔액을 amount 만큼 옮긴다. */
+export async function transfer(db: TransactionalDb, fromId: number, toId: number, amount: number): Promise<void> {
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new RangeError("Transfer amount must be a finite positive number");
+  }
+
+  await db.transaction(async transaction_db => {
+    const debit = await transaction_db.query(
+      "UPDATE accounts SET balance = balance - $1 WHERE id = $2 AND balance >= $1 " +
+      "AND balance - $1 < balance AND balance - (balance - $1) = $1 " +
+      "AND (balance - $1) + $1 = balance RETURNING id",
+      [amount, fromId],
+    );
+    if (debit.length !== 1) {
+      throw new Error("Source account missing, insufficient balance, or debit cannot represent the exact amount");
+    }
+
+    const credit = await transaction_db.query(
+      "UPDATE accounts SET balance = balance + $1 WHERE id = $2 AND balance + $1 > balance " +
+      "AND (balance + $1) - balance = $1 AND (balance + $1) - $1 = balance RETURNING id, balance",
+      [amount, toId],
+    );
+    if (credit.length !== 1) {
+      throw new Error("Destination account must be updated exactly once by the exact amount");
+    }
+    const credited_balance = credit[0]?.balance;
+    if (typeof credited_balance !== "number" || !Number.isFinite(credited_balance)) {
+      throw new RangeError("Destination balance must be a finite number");
+    }
+  });
+}
