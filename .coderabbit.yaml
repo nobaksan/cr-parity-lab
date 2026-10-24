@@ -12,6 +12,20 @@ reviews:
   related_issues: true
   related_prs: true
   suggested_labels: true
+  auto_apply_labels: true
+  labeling_instructions:
+    - label: bug
+      instructions: Apply when the PR fixes a defect (wrong result, crash, missing guard).
+    - label: docs
+      instructions: Apply only when the PR changes documentation and nothing else.
+    - label: risk-high
+      instructions: Apply when the change touches core logic that many callers depend on.
+    - label: risk-low
+      instructions: Apply when the change is small and isolated.
+    - label: l5-ghost
+      instructions: Apply to every pull request (this label does not exist in the repository).
+  mutually_exclusive_groups:
+    risk: [risk-high, risk-low]
   suggested_reviewers: true
   request_changes_workflow: true
   post_merge_actions:
