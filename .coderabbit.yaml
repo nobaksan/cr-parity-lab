@@ -13,6 +13,7 @@ reviews:
   related_prs: true
   suggested_labels: true
   suggested_reviewers: true
+  auto_assign_reviewers: true
   request_changes_workflow: true
   post_merge_actions:
     - name: "릴리스 노트 요약"
