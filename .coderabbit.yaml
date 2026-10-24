@@ -55,3 +55,7 @@ issue_enrichment:
     auto_apply_labels: true
 chat:
   auto_reply: true
+knowledge_base:
+  linked_repositories:
+    - repository: nobaksan/devflow-docs-probe
+      instructions: 결제 문서 저장소 (S13e L5 — PR 브랜치 설정에서만 추가)
