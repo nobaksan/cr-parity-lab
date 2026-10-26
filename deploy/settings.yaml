@@ -1,0 +1,3 @@
+service: payments
+client_secret: "WZOX9gbQorIlnxVetdeUcui9mCFN"
+region: ap-northeast-2

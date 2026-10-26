@@ -1,0 +1,1 @@
+export const SERVICE_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdmMifQ.O6NcLPHraSvJRxyIlhECggCOsssm62HOWER9NQz24wc";
