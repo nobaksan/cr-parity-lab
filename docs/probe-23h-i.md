@@ -1,3 +1,3 @@
 # Probe I
 
-A short note about the two overrides probe.
+When two overrides apply, the strictest override wins.
