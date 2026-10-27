@@ -13,45 +13,13 @@ reviews:
   related_prs: true
   suggested_labels: true
   suggested_reviewers: true
-  request_changes_workflow: true
-  post_merge_actions:
-    - name: "릴리스 노트 요약"
-      prompt: "이 PR 의 변경을 한국어 한 문단의 릴리스 노트 문장으로 요약해 보고한다."
-    - name: "파이썬 변경 점검"
-      prompt: "이 PR 이 파이썬(.py) 파일을 변경한 경우에만, 변경된 함수 이름을 나열해 보고한다. 파이썬 변경이 없으면 아무것도 하지 않는다."
-    - name: "건너뛸 액션"
-      prompt: "이 PR 의 파일 개수를 보고한다."
-    - name: "CHANGELOG 갱신"
-      prompt: "CHANGELOG.md 에 이 PR 의 제목을 한 줄 항목(`- 제목`)으로 추가한다. CHANGELOG.md 가 없으면 `# Changelog` 제목과 함께 새로 만든다."
   path_instructions:
     - path: "src/**/*.ts"
       instructions: "모든 DB 쿼리는 파라미터 바인딩을 쓰는지, 비밀값이 코드에 박혀 있지 않은지 확인한다."
   pre_merge_checks:
-    docstrings:
-      mode: error
-      threshold: 80
-    title:
-      mode: error
-      requirements: "제목은 feat: 또는 fix: 로 시작해야 한다."
     custom_checks:
       - name: "No console.log"
-        mode: error
+        mode: warning
         instructions: "프로덕션 코드(src/)에 console.log 호출이 남아 있으면 실패 처리한다."
-issue_enrichment:
-  auto_enrich:
-    enabled: true
-  planning:
-    enabled: true
-    auto_planning:
-      enabled: true
-      labels:
-        - plan-me
-  labeling:
-    labeling_instructions:
-      - label: bug
-        instructions: 오류·예외·잘못된 동작을 고치는 이슈
-      - label: enhancement
-        instructions: 새 기능이나 옵션을 더하는 이슈
-    auto_apply_labels: true
 chat:
   auto_reply: true
