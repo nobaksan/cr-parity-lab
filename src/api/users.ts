@@ -7,3 +7,4 @@ export async function GET(req: Request) {
   const rows = await db.query(`SELECT * FROM users WHERE id = '${id}'`);
   return Response.json(rows);
 }
+// S23d L5 drift 시험: 주석 한 줄 추가 (동작 변경 없음)
