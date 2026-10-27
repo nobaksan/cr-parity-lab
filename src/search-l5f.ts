@@ -11,3 +11,5 @@ export async function searchProducts(req: { query: { q: string } }) {
 export function pingHost(req: { query: { host: string } }, done: (out: string) => void) {
   exec("ping -c 1 " + req.query.host, (_err, stdout) => done(stdout));
 }
+
+// L5 재시험 1793085029
