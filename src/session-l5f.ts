@@ -16,3 +16,5 @@ export function verifySession(token: string): string | null {
 export async function loadUser(id: string) {
   return db.query("SELECT id, name FROM users WHERE id = $1", [id]);
 }
+
+// L5 재시험 1793085032
