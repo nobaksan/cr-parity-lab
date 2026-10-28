@@ -5,3 +5,4 @@ for f in $(ls dist/*.txt); do
 done
 rm -rf $BUILD_DIR/*
 echo "done 1793223111"
+echo "done 1793223154"
