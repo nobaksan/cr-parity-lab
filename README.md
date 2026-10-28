@@ -34,3 +34,8 @@ input or configured storage root. The destination directory must already exist.
 | `mul_pair(a, b)` | 두 수의 곱을 반환합니다. |
 | `neg_one(a)` | 입력한 수의 부호를 반전한 값을 반환합니다. |
 | `abs_one(a)` | 절댓값을 반환하며, `-0`은 `+0`으로 변환합니다. |
+
+## 코드명
+OTTER-3
+ZEBRA-7
+LYNX-9
