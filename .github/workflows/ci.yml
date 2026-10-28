@@ -1,0 +1,10 @@
+name: ci
+on: push
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event.issue.title }}
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ matrix.depth }}
