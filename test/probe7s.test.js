@@ -29,12 +29,14 @@ test("format_money preserves fractional digits while grouping the integer part",
 });
 
 test("format_money expands large exponent values before grouping", () => {
+  const expected_max_value = "179,769,313,486,231,570" + ",000".repeat(97);
+
   for (const [value, expected] of [
     [1e20, "100,000,000,000,000,000,000"],
     [1e21, "1,000,000,000,000,000,000,000"],
     [-1e21, "-1,000,000,000,000,000,000,000"],
     [1.2345678901234568e21, "1,234,567,890,123,456,800,000"],
-    [Number.MAX_VALUE, "179,769,313,486,231,570" + ",000".repeat(97)],
+    [Number.MAX_VALUE, expected_max_value],
   ]) {
     assert.equal(format_money(value), expected);
   }
